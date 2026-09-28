@@ -1,0 +1,19 @@
+[
+  "Operating_Hours",
+  "Voltage_RMS",
+  "Irms",
+  "Power_Factor",
+  "Phase_Angle",
+  "I_THD",
+  "Vibration_X",
+  "Vibration_Y",
+  "Vibration_Z",
+  "RMS_Vibration",
+  "Peak_Acceleration",
+  "Kurtosis",
+  "Skewness",
+  "Variance",
+  "Peak_to_Peak",
+  "Dominant_Frequency",
+  "Spectral_Energy"
+]

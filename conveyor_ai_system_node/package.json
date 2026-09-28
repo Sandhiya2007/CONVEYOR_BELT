@@ -1,0 +1,23 @@
+{
+  "name": "conveyor-ai-system-node",
+  "version": "3.0.0",
+  "private": true,
+  "description": "Conveyor Belt AI Industrial Monitoring System - Node.js backend + JavaScript frontend",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "predict": "node backend/predict.js --sample",
+    "live:simulate": "node backend/predict-live.js --simulate"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "csv-parse": "^5.6.0",
+    "express": "^5.1.0",
+    "ws": "^8.18.0",
+    "@wlearn/xgboost": "^0.2.0"
+  }
+}
