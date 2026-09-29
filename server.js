@@ -89,6 +89,20 @@ wss.on("connection",(ws)=>{
   wsManager.add(ws);
   ws.send(JSON.stringify({type:"CONNECTION_ESTABLISHED",server_time:new Date().toISOString().replace("T"," ").slice(0,19),
     dataset_info:datasetService.getInfo(),stream_status:streamService.getStatus()}));
+  
+  // Immediately send the current dataset row telemetry packet to newly connected client
+  if (datasetService.isLoaded && modelService.isLoaded) {
+    try {
+      const rowNum = Math.max(1, Math.min(streamService.currentRow || 1, datasetService.totalRows));
+      const { row } = datasetService.getRow(rowNum);
+      const packet = predictionService.processTelemetry(row, rowNum, streamService.mode);
+      packet.stream_status = streamService.getStatus();
+      ws.send(JSON.stringify(packet));
+    } catch(err) {
+      console.error("[WS] Error sending initial row packet:", err);
+    }
+  }
+
   ws.on("close",()=>wsManager.remove(ws));
   ws.on("error",()=>wsManager.remove(ws));
   ws.on("message",()=>{});
@@ -104,6 +118,11 @@ server.listen(PORT,HOST,()=>{
   console.log(`  Model loaded:       ${modelService.isLoaded ? "YES" : "NO"}`);
   if(!modelService.isLoaded) console.log(`  Model error:        ${modelService.loadError}`);
   console.log("=".repeat(65));
+
+  // Automatically start dataset simulation stream
+  if (datasetService.isLoaded && modelService.isLoaded) {
+    streamService.startStream(1, datasetService.totalRows, 2);
+  }
 });
 function shutdown(){streamService.stopStream();wss.close();server.close(()=>process.exit(0));}
 process.on("SIGINT",shutdown);process.on("SIGTERM",shutdown);
